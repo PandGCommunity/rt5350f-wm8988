@@ -1,3 +1,3 @@
-snd-soc-mt762x-wm8960-objs := mt762x-wm8960.o
+snd-soc-rt5350f-wm8988-objs := rt5350f-wm8988.o
 
-obj-$(CONFIG_SND_SOC_MT762X_WM8960) += snd-soc-mt762x-wm8960.o
+obj-$(CONFIG_SND_SOC_RT5350F_WM8988) += snd-soc-rt5350f-wm8988.o
