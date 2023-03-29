@@ -68,4 +68,9 @@ define Package/kmod-sound-rt5350f-wm8988/install
 	true
 endef
 
+define KernelPackage/sound-rt5350f-wm8988/install
+	$(INSTALL_DIR) $(1)/etc
+	$(CP) $(PKG_BUILD_DIR)/asound.conf $(1)/etc/asound.conf
+endef
+# $(CP) $(PKG_BUILD_DIR)/examples/asound.conf.alsa $(1)/etc/asound.conf
 $(eval $(call KernelPackage,sound-rt5350f-wm8988))

@@ -125,12 +125,35 @@ static int rt5350f_wm8988_machine_probe(struct platform_device *pdev)
     list_for_each_entry(rtd, &card->rtd_list, list) {
         if (!strcmp(rtd->codec_dai->name, rt5350f_wm8988_dai_links->codec_dai_name)) {
             codec_dai = rtd->codec_dai;
+            // rt5350f_wm8988_dai_links->ops->hw_params
             break;
         }
     }
     if (!codec_dai) {
         dev_err(&pdev->dev, "failed to get codec dai\n");
         return -EINVAL;
+    }
+    // unsigned int clk_freq;
+    // int ret;
+
+    // clk_freq = clk_get_rate(priv->codec_clk);
+    unsigned int mclk_rate = 12 * 1000000;
+    // struct snd_soc_dai *codec_dai = rtd->codec_dai;
+    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+
+    ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_rate, SND_SOC_CLOCK_OUT);
+    if (ret) {
+        dev_err(&pdev->dev, "%s snd_soc_dai_set_sysclk cpu_dai fail %d\n", __func__, ret);
+        return ret;
+    }
+
+    // ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk_freq, SND_SOC_CLOCK_IN);
+    ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate, SND_SOC_CLOCK_IN);
+    // snd_soc_codec_set_sysclk(codec_dai, 0, 0, mclk_rate, SND_SOC_CLOCK_IN);
+    // snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate, SND_SOC_CLOCK_IN);
+    if (ret) {
+        dev_err(&pdev->dev, "%s snd_soc_dai_set_sysclk codec_dai fail %d\n", __func__, ret);
+        return ret;
     }
 
     // When ADCLRC is configured as a GPIO, DACLRC is used for the ADCs
